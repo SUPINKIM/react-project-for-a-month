@@ -1,6 +1,8 @@
 import './style.css';
 
-import { Button } from './button.jsx';
+import { Button } from './components/button.jsx';
+import App from './App';
+import { serializeVirtualDom } from './utils/serialize';
 
 document.querySelector('#app').innerHTML = `
   <div>
@@ -9,4 +11,6 @@ document.querySelector('#app').innerHTML = `
 `;
 
 //document.querySelector('#app').appendChild(Button());
-console.log(JSON.stringify(Button(), null, '\t'));
+
+console.log(serializeVirtualDom(Button()));
+console.log(serializeVirtualDom(App()));
