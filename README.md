@@ -67,11 +67,11 @@
 
 - [x] createElement 함수를 작성하세요.
 
-- [ ] 간단한 JSX를 작성하고, 트랜스파일된 결과를 확인하세요.
+- [x] 간단한 JSX를 작성하고, 트랜스파일된 결과를 확인하세요.
 
-- [ ] createElement 함수가 제대로 동작하는지 테스트하세요.
+- [x] createElement 함수가 제대로 동작하는지 테스트하세요.
 
-- [ ] 생성된 Virtual DOM 객체를 콘솔로 출력하고, 구조를 분석하세요.
+- [x] 생성된 Virtual DOM 객체를 콘솔로 출력하고, 구조를 분석하세요.
 
 ---
 
@@ -104,3 +104,65 @@ function Title() {
   });
 }
 ```
+
+---
+
+##### 새롭게 알게 된 사실 (25.02.07)
+
+1. `@babel/preset-react` 를 설치하지 않고 단순히 `@babel/plugin-transform-react-jsx` 만을 의존성에 추가하고 트랜스파일링 했을 시 결과는 React.createElement로 변환된다. (legacy)
+
+```js
+{
+  "presets": [],
+  "plugins": ["@babel/plugin-transform-react-jsx"]
+}
+```
+
+2. `@babel/preset-react` 를 설치하고 babel.config.json > presets 에 추가한 뒤 {"runtime": "automatic"} (default : "classic") 옵션을 주면 jsx 함수로 트랜스 파일링이 됨. (단, `react/jsx-runtime` 모듈이 빌드 시에 babel에 의해 자동으로 import 되는데 react-dom이 안 깔려 있으면 해당 모듈을 찾지 못해서 빌드가 실패한다.)
+
+```js
+l = h();
+const m = () => {
+  const i = () => {
+    alert('Hello world');
+  };
+  return l.jsxs('button', {
+    onClick: i,
+    children: [
+      l.jsx('span', { className: 'button-name', children: 'this is button!' }),
+      l.jsx('div', {
+        children: l.jsx('span', { children: 'this is children~' }),
+      }),
+    ],
+  });
+};
+```
+
+---
+
+#### [vite jsx 빌드 옵션 공식문서](https://ko.vitejs.dev/guide/features#jsx)
+
+- ##### JSX
+  - `.jsx`와 `.tsx` esbuild를 이용해 컴파일링합니다.
+  - React나 Vue를 사용하지 않는다 해도, esbuild 옵션을 이용해 `jsxFactory`나 `jsxFragment`를 커스터마이징 할 수 있습니다.
+  - 참고로 Vite에서만 제공되는 옵션인 jsxInject를 이용해 JSX에 대한 헬퍼를 사용할 수도 있습니다.
+
+[esbuild jsx 공식문서](https://esbuild.github.io/content-types/#jsx)
+
+- Using JSX without React
+
+  - if you're using JSX with a library other than React (such as Preact), you'll likely need to configure the JSX factory and JSX fragment settings since they default to React.createElement and React.Fragment respectively
+
+- You will also have to add import {h, Fragment} from 'preact' in files containing JSX syntax unless you use auto-importing as described above.
+
+---
+
+#### 📚 DAY5
+
+**TODO LIST**
+
+- [ ] 최소 2개의 자식 컴포넌트를 가진 App 컴포넌트를 작성하세요.
+
+- [ ] 컴포넌트에서 다양한 HTML 요소와 속성을 사용해보세요.
+
+- [ ] 생성된 Virtual DOM 객체를 콘솔로 출력하고, 구조를 분석하세요.

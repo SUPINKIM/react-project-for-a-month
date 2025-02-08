@@ -1,11 +1,14 @@
+// DEMO
 export const Button = () => {
   const handleClick = () => {
     alert('Hello world');
   };
   return (
     <button onClick={handleClick}>
-      <span className="button-name">this is button!</span>
-      <div>
+      <span id="button-name" className="placeholder">
+        this is button!
+      </span>
+      <div id="children-container">
         <span>this is children~</span>
       </div>
     </button>

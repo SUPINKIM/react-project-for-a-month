@@ -8,4 +8,5 @@ document.querySelector('#app').innerHTML = `
   </div>
 `;
 
-document.querySelector('#app').appendChild(Button());
+//document.querySelector('#app').appendChild(Button());
+console.log(JSON.stringify(Button(), null, '\t'));

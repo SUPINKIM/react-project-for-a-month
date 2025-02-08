@@ -23,8 +23,7 @@
  *  @returns Node
  *
  */
-const createElement = (type, props, ...children) => {
-  //console.log(children);
+export const createElement = (type, props, children) => {
   if (children.length === 0) {
     return {
       type,
@@ -32,49 +31,43 @@ const createElement = (type, props, ...children) => {
     };
   }
 
-  const arr = [];
-
-  for (const child of children) {
+  const res = children.reduce((acc, child) => {
     if (typeof child === 'string' || typeof child === 'number') {
-      arr.push(child);
-    }
-
-    if (typeof child === 'boolean') {
-      continue;
+      acc.push(child);
     }
 
     if (typeof child === 'object') {
-      arr.push({ ...child });
+      acc.push({ ...child });
     }
-  }
+
+    return acc;
+  }, []);
 
   return {
     type,
-    props: {
-      ...props,
-      children: arr,
-    },
+    props,
+    children: [...res],
   };
 };
 
-console.log(
-  `출력 결과 1: `,
-  JSON.stringify(
-    createElement('div', { className: 'container' }, 'Hello, World!'),
-  ),
-);
+// console.log(
+//   `출력 결과 1: `,
+//   JSON.stringify(
+//     createElement('div', { className: 'container' }, 'Hello, World!'),
+//   ),
+// );
 
-console.log(
-  `\n 출력 결과 2: `,
-  JSON.stringify(
-    createElement(
-      'div',
-      { className: 'container' },
-      'Hello, World!',
-      createElement('span', { className: 'child', id: '12' }, 'Welcome, 2025'),
-    ),
-  ),
-);
+// console.log(
+//   `\n 출력 결과 2: `,
+//   JSON.stringify(
+//     createElement(
+//       'div',
+//       { className: 'container' },
+//       'Hello, World!',
+//       createElement('span', { className: 'child', id: '12' }, 'Welcome, 2025'),
+//     ),
+//   ),
+// );
 
 /**
  * Virtual DOM의 이해
