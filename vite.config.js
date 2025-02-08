@@ -1,9 +1,12 @@
 import { defineConfig } from 'vite';
 import babel from 'vite-plugin-babel';
+import viteJsconfigPaths from 'vite-jsconfig-paths';
 
 export default defineConfig({
-  resolve: {
-    alias: [{ find: '@', replacement: '/src' }],
+  plugins: [viteJsconfigPaths()],
+  esbuild: {
+    jsx: 'transform',
+    jsxInject: 'import { h } from "@/jsx/jsx-runtime"',
+    jsxFactory: 'h',
   },
-  plugins: [babel()],
 });
