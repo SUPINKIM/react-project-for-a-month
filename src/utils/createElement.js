@@ -79,22 +79,3 @@ export const createElement = (type, props, children) => {
     children: createChildrenElement(children),
   };
 };
-
-// console.log(
-//   `출력 결과 1: `,
-//   JSON.stringify(
-//     createElement('div', { className: 'container' }, 'Hello, World!'),
-//   ),
-// );
-
-// console.log(
-//   `\n 출력 결과 2: `,
-//   JSON.stringify(
-//     createElement(
-//       'div',
-//       { className: 'container' },
-//       'Hello, World!',
-//       createElement('span', { className: 'child', id: '12' }, 'Welcome, 2025'),
-//     ),
-//   ),
-// );
