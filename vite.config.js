@@ -1,5 +1,4 @@
 import { defineConfig } from 'vite';
-//import babel from 'vite-plugin-babel';
 import viteJsconfigPaths from 'vite-jsconfig-paths';
 
 export default defineConfig({

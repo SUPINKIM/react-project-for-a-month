@@ -1,13 +1,8 @@
-import { Button } from './components/button.jsx';
-import App from './App';
-import { serializeVirtualDom } from './utils/serialize';
+import Button from './components/button.jsx';
+import App from './App.jsx';
 import { render } from './utils/render.js';
 
-//document.querySelector('#app').appendChild(Button());
-
-console.log(serializeVirtualDom(Button()));
 //console.log(serializeVirtualDom(App()));
 
-const button = Button();
-
-document.querySelector('#app').appendChild(render(button));
+render(App(), document.querySelector('#app'));
+render(Button(), document.querySelector('#app'));

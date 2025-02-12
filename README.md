@@ -175,8 +175,32 @@ const m = () => {
 
 **TODO LIST**
 
-- [ ] render 함수를 작성하여 Virtual DOM을 실제 DOM으로 변환하세요.
+- [x] render 함수를 작성하여 Virtual DOM을 실제 DOM으로 변환하세요.
 
-- [ ] 간단한 Virtual DOM 객체를 만들어 render 함수를 테스트하세요.
+- [x] 간단한 Virtual DOM 객체를 만들어 render 함수를 테스트하세요.
 
-- [ ] 생성된 DOM이 예상대로 화면에 표시되는지 확인하세요.
+- [x] 생성된 DOM이 예상대로 화면에 표시되는지 확인하세요.
+
+---
+
+##### 새롭게 알게 된 사실 (25.02.12)
+
+React 18버전부터 이전에 사용하던 render 함수가 deprecated, `createRoot` 함수로 대체되었습니다.
+
+[render 함수(React 공식문서)](https://18.react.dev/reference/react-dom/render)
+
+##### TroubleShooting (25.02.12)
+
+```md
+render 함수를 만들면서 이전에 만든 createElement 함수의 버그를 발견했습니다. children 으로 넘겨준 JSX 가 VDOM을 만들면서 소실되는 지점을 발견했습니다. 이를 해결하기 위해서 'Component' 라는 임의의 type을 주입하던 부분을 제거하고 createElement 함수의 type이 function이면 바로 type 함수를 호출해서 JSX를 파싱할 수 있게 했습니다. 미리 파싱된 children이 있다면 return 할 때 type함수를 호출해서 만들어진 children과 그 이전에 파싱된 children을 합쳐서 같이 return 할 수 있도록 수정했습니다.
+```
+
+#### 📚 DAY3-4
+
+**TODO LIST**
+
+- [ ] useState 함수를 구현하세요.
+
+- [ ] 간단한 카운터 컴포넌트를 만들어 상태 변경에 따른 UI 변화를 확인하세요.
+
+- [ ] 상태 변경 시 어떻게 컴포넌트가 재렌더링되는지 이해하세요.

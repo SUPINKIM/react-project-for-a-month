@@ -1,5 +1,4 @@
-// DEMO
-export const Button = () => {
+const Button = () => {
   const handleClick = () => {
     alert('Hello world');
   };
@@ -14,3 +13,5 @@ export const Button = () => {
     </button>
   );
 };
+
+export default Button;

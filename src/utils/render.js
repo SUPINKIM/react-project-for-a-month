@@ -4,17 +4,16 @@
  *
  */
 
-import { EVENT_TYPE } from 'src/constants/events';
+/** 이벤트 핸들러는 `on${eventName}`으로 이루어짐 */
+export const getEventName = (eventName) =>
+  eventName.split('on').pop().toLowerCase();
 
-export const handleEventListener = () => {};
-
-export const handleEvent = (target, key, fn) => {
-  try {
-    target.addEventListener(EVENT_TYPE[key], fn);
-  } catch {
-    console.error(
-      `해당 이벤트는 아직 이벤트 타입에 정의되지 않았습니다. 이벤트 타입을 확인해주세요.`,
-    );
+export const handleAttribute = (key) => {
+  switch (key) {
+    case 'className':
+      return 'class';
+    default:
+      return key;
   }
 };
 
@@ -22,22 +21,30 @@ export const handleProps = (target, props) => {
   Object.entries(props).forEach(([key, value]) => {
     switch (typeof value) {
       case 'function':
-        handleEvent(target, key, value);
+        target.addEventListener(getEventName(key), value);
         break;
       default:
-        target.setAttribute(key, value);
-        break;
+        target.setAttribute(handleAttribute(key), value);
     }
   });
 };
 
-export const createRootElement = () => {
-  // 가장 상위에 있는 가상 노드
-  return document.createDocumentFragment();
+export const createFragment = () => document.createDocumentFragment();
+
+/**
+ * @params type: 'Fragment' | string
+ */
+export const getContainer = (type) => {
+  switch (type) {
+    case 'Fragment':
+      return createFragment();
+    default:
+      return document.createElement(type);
+  }
 };
 
 /**
- * interface CreateDomParams {
+ * interface VDom {
  *   type: string;
  *   props: { [key: string]: string | function };
  *   children: Array<Node>;
@@ -46,42 +53,54 @@ export const createRootElement = () => {
  */
 
 /**
+ * @param children: Array<VDom> | VDom
+ * @returns Array<VDom>
  *
- * @param params: CreateDomParams
+ */
+export const getChildren = (children) => {
+  if (Array.isArray(children)) {
+    return children;
+  }
+  return [children];
+};
+
+/**
+ *
+ * @param params: VDom
  * @returns Node
  *
  */
-export const createDom = ({ type, props, children }) => {
-  const container = document.createElement(type); // type이 string인 경우
+export const createDOM = ({ type, props, children }) => {
+  const container = getContainer(type);
 
-  /**
-   * TODO
-   * 1. 속성 처리를 어떻게 할 것인지
-   * 2. 이벤트 핸들러 처리는 어떻게 할 것인지
-   */
-
-  if (props) {
+  /** fragment 아닐 때만 props 속성 처리 */
+  if (props && container.setAttribute) {
     handleProps(container, props);
   }
 
-  const [firstChild] = children;
+  const [firstChild] = getChildren(children);
 
   if (typeof firstChild === 'string' && children.length === 1) {
     container.appendChild(document.createTextNode(firstChild));
     return container;
   }
 
-  for (const child of children) {
-    container.appendChild(createDom(child));
-  }
+  getChildren(children).forEach((child) => {
+    container.appendChild(createDOM(child));
+  });
 
   return container;
 };
 
-export const render = (params) => {
-  const container = createRootElement();
+/**
+ *
+ * @param component: VDom
+ * @param target: HTMLElement
+ */
+export const render = (component, target) => {
+  const container = createFragment();
 
-  container.appendChild(createDom(params));
+  container.appendChild(createDOM(component));
 
-  return container;
+  target.appendChild(container);
 };
