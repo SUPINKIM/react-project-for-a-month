@@ -78,7 +78,6 @@ const TodoList = () => {
           {todos.map((todo) => (
             <li key={todo.id}>
               <Button
-                style={{ border: 0, background: 'transparent' }}
                 name={todo.isChecked ? '✅' : '⭕️'}
                 onClick={() => toggleCheck(todo.id)}
               />
