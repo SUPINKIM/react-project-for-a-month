@@ -59,7 +59,7 @@ export const createElement = (type, props, children) => {
    * 함수형 컴포넌트(Component)로 인식하고 처리
    */
   if (isComponent(type)) {
-    return type({ ...props, children: children[0] });
+    return type({ ...props, children });
   }
 
   if (children.length === 0) {
@@ -72,6 +72,6 @@ export const createElement = (type, props, children) => {
   return {
     type,
     props,
-    children: createChildrenElement(children),
+    children: createChildrenElement(children.flat()),
   };
 };
