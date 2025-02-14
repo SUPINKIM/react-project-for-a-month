@@ -189,18 +189,41 @@ React 18버전부터 이전에 사용하던 render 함수가 deprecated, `create
 
 [render 함수(React 공식문서)](https://18.react.dev/reference/react-dom/render)
 
+---
+
 ##### TroubleShooting (25.02.12)
 
-```md
-render 함수를 만들면서 이전에 만든 createElement 함수의 버그를 발견했습니다. children 으로 넘겨준 JSX 가 VDOM을 만들면서 소실되는 지점을 발견했습니다. 이를 해결하기 위해서 'Component' 라는 임의의 type을 주입하던 부분을 제거하고 createElement 함수의 type이 function이면 바로 type 함수를 호출해서 JSX를 파싱할 수 있게 했습니다. 미리 파싱된 children이 있다면 return 할 때 type함수를 호출해서 만들어진 children과 그 이전에 파싱된 children을 합쳐서 같이 return 할 수 있도록 수정했습니다.
 ```
+render 함수를 만들면서 이전에 만든 createElement 함수의 버그를 발견했습니다. children 으로 넘겨준 JSX 가 VDOM을 만들면서 소실되는 지점을 발견했습니다. 이를 해결하기 위해서 'Component' 라는 임의의 type을 주입하던 부분을 제거하고 createElement 함수의 type이 function이면 바로 type 함수를 호출해서 JSX를 파싱할 수 있게 했습니다.
+
+여기서 주의할 점은 type 함수를 호출할 때 children을 같이 넘기지 않으면 children props의 올바른 위치에 제대로 렌더링이 안 되는 문제가 있기 때문에 children을 같이 넘겨주도록 수정했습니다.
+```
+
+```js
+// 아래와 같이 children을 넘기면
+const result = type(props);
+return {
+  ...result,
+  children: [...result.children, ...children],
+};
+
+/**
+ * ⛔️ 이렇게 렌더링 한 경우에도 124가 먼저 dom에 그려지고 그 다음 children이 렌더링 될 것이므로 의도한대로 children이 렌더링 되지 않는 문제가 발생!
+ */
+<div>
+  {children}
+  <div>124</div>
+</div>;
+```
+
+---
 
 #### 📚 DAY3-4
 
 **TODO LIST**
 
-- [ ] useState 함수를 구현하세요.
+- [x] useState 함수를 구현하세요.
 
-- [ ] 간단한 카운터 컴포넌트를 만들어 상태 변경에 따른 UI 변화를 확인하세요.
+- [x] 간단한 카운터 컴포넌트를 만들어 상태 변경에 따른 UI 변화를 확인하세요.
 
 - [ ] 상태 변경 시 어떻게 컴포넌트가 재렌더링되는지 이해하세요.
