@@ -44,7 +44,7 @@ export const getContainer = (type) => {
 };
 
 /**
- * interface VDom {
+ * interface VDOM {
  *   type: string;
  *   props: { [key: string]: string | function };
  *   children: Array<Node>;
@@ -53,7 +53,7 @@ export const getContainer = (type) => {
  */
 
 /**
- * @param children: Array<VDom> | VDom
+ * @param children: Array<VDom> | VDOM
  * @returns Array<VDom>
  *
  */
@@ -71,7 +71,7 @@ export const isPrimitiveType = (value) => {
 
 /**
  *
- * @param params: VDom
+ * @param params: VDOM
  * @returns Node
  *
  */
@@ -101,13 +101,11 @@ export const createDOM = ({ type, props, children }) => {
 
 /**
  *
- * @param component: VDom
+ * @param component: VDOM
  * @param target: HTMLElement
  */
 export const render = (component, target) => {
   const container = createFragment();
-
   container.appendChild(createDOM(component));
-
   target.appendChild(container);
 };

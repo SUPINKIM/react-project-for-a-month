@@ -1,26 +1,12 @@
-import App from 'src/App';
-import { render } from './render';
+import { createRoot } from './commit';
 
 export default (function () {
   let index = 0;
   const state = [];
 
   const forceUpdate = () => {
-    // 다시 VDOM을 그려서 render 를 호출해야 한다.
-    index = 0;
-
-    const root = document.querySelector('#app');
-
-    root.remove();
-
-    const body = document.querySelector('body');
-
-    const newRoot = document.createElement('div');
-    newRoot.setAttribute('id', 'app');
-
-    render(App(), newRoot);
-
-    body.appendChild(newRoot);
+    index = 0; // index 초기화
+    createRoot();
   };
 
   const useState = (initialSate) => {
