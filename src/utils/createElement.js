@@ -59,11 +59,7 @@ export const createElement = (type, props, children) => {
    * 함수형 컴포넌트(Component)로 인식하고 처리
    */
   if (isComponent(type)) {
-    const result = type(props);
-    return {
-      ...result,
-      children: [...result.children, ...children],
-    };
+    return type({ ...props, children: children[0] });
   }
 
   if (children.length === 0) {

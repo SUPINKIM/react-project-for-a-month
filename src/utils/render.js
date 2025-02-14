@@ -64,6 +64,11 @@ export const getChildren = (children) => {
   return [children];
 };
 
+export const isPrimitiveType = (value) => {
+  if (typeof value === 'boolean') return false; // boolean 처리를 리액트에서 어떻게 하는지 확인 필요
+  return typeof value !== 'object';
+};
+
 /**
  *
  * @param params: VDom
@@ -78,9 +83,11 @@ export const createDOM = ({ type, props, children }) => {
     handleProps(container, props);
   }
 
+  if (!children) return container;
+
   const [firstChild] = getChildren(children);
 
-  if (typeof firstChild === 'string' && children.length === 1) {
+  if (isPrimitiveType(firstChild) && children.length === 1) {
     container.appendChild(document.createTextNode(firstChild));
     return container;
   }
