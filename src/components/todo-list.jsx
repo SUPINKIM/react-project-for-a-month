@@ -11,6 +11,8 @@ const TodoList = () => {
    */
   const [todos, setTodos] = React.useState([]);
 
+  const isEmpty = todos.length === 0;
+
   const createTodo = () => {
     const value = document.getElementById('todo-input').value;
 
@@ -64,6 +66,7 @@ const TodoList = () => {
           type="text"
           autoComplete="off"
           onKeyUp={handleKeyUp}
+          autoFocus
         />
         <Button name="할 일 추가" onClick={createTodo} />
       </div>
@@ -73,7 +76,9 @@ const TodoList = () => {
 
       <h4>오늘의 할 일 목록 👇</h4>
 
-      {todos.length > 0 && (
+      {isEmpty ? (
+        <p>모든 할 일을 마쳤습니다 🎉👏</p>
+      ) : (
         <ul>
           {todos.map((todo) => (
             <li key={todo.id}>
@@ -81,14 +86,12 @@ const TodoList = () => {
                 name={todo.isChecked ? '✅' : '⭕️'}
                 onClick={() => toggleCheck(todo.id)}
               />
-              <span>{`   ${todo.value}   `}</span>
+              <span>{` ${todo.value} `}</span>
               <Button name="삭제" onClick={() => deleteTodo(todo.id)} />
             </li>
           ))}
         </ul>
       )}
-
-      {todos.length === 0 && <p>모든 할 일을 마쳤습니다 🎉👏</p>}
     </div>
   );
 };
