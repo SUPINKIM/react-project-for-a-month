@@ -82,9 +82,10 @@ const TodoList = () => {
         <ul>
           {todos.map((todo) => (
             <li key={todo.id}>
-              <Button
-                name={todo.isChecked ? '✅' : '⭕️'}
-                onClick={() => toggleCheck(todo.id)}
+              <input
+                type="checkbox"
+                checked={todo.isChecked}
+                onChange={() => toggleCheck(todo.id)}
               />
               <span>{` ${todo.value} `}</span>
               <Button name="삭제" onClick={() => deleteTodo(todo.id)} />
