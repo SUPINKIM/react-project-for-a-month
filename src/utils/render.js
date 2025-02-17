@@ -25,9 +25,8 @@ export const handleProps = (target, props) => {
           target.addEventListener(getEventName(key), value);
           break;
         default:
-          if (value) {
-            target.setAttribute(handleAttribute(key), value);
-          }
+          if (typeof value === 'boolean' && !value) break;
+          target.setAttribute(handleAttribute(key), value);
       }
     } catch {
       console.error('올바른 HTML 태그 속성이 아닙니다. 속성을 확인해주세요.');
