@@ -38,6 +38,12 @@
  *
  */
 
+const keys = (key = 0) => {
+  return () => key++;
+};
+
+const getKey = keys();
+
 const isComponent = (type) => typeof type === 'function';
 
 const createChildrenElement = (children) =>
@@ -66,12 +72,14 @@ export const createElement = (type, props, children) => {
     return {
       type,
       props,
+      key: props?.key || getKey(), // 내부적으로 사용할 key
     };
   }
 
   return {
     type,
     props,
+    key: props?.key || getKey(),
     children: createChildrenElement(children.flat()),
   };
 };

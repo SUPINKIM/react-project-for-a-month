@@ -5,6 +5,10 @@
  */
 
 /** 이벤트 핸들러는 `on${eventName}`으로 이루어짐 */
+import { DIFF_TYPE, diffing } from './diff';
+
+const { setVDOM, getVDOM, compareDiff } = diffing();
+
 export const getEventName = (eventName) =>
   eventName.split('on').pop().toLowerCase();
 
@@ -80,7 +84,9 @@ export const isPrimitiveType = (value) => {
  * @returns Node
  *
  */
-export const createDOM = ({ type, props, children }) => {
+export const createDOM = ({ type, props, children, key }, target) => {
+  // diff 알고리즘을 통해서 달라진 경우만 새 노드를 만든다.
+  const { isDiff, type: diffType, prevNode } = compareDiff(type, key);
   const container = getContainer(type);
 
   /** fragment 아닐 때만 props 속성 처리 */
@@ -98,7 +104,12 @@ export const createDOM = ({ type, props, children }) => {
   }
 
   getChildren(children).forEach((child) => {
-    container.appendChild(createDOM(child));
+    const newNodes = createDOM(child, container);
+    if (!getVDOM() || !prevNode) {
+      target.appendChild(newNodes);
+    } else if (isDiff && diffType === DIFF_TYPE.ELEMENT) {
+      target.replaceChildren(prevNode, newNodes);
+    }
   });
 
   return container;
@@ -110,7 +121,6 @@ export const createDOM = ({ type, props, children }) => {
  * @param target: HTMLElement
  */
 export const render = (component, target) => {
-  const container = createFragment();
-  container.appendChild(createDOM(component));
-  target.appendChild(container);
+  createDOM(component, target);
+  setVDOM(component);
 };
