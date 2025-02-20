@@ -38,11 +38,7 @@
  *
  */
 
-const keys = (key = 0) => {
-  return () => key++;
-};
-
-const getKey = keys();
+import keys from '@/utils/keys';
 
 const isComponent = (type) => typeof type === 'function';
 
@@ -68,18 +64,22 @@ export const createElement = (type, props, children) => {
     return type({ ...props, children });
   }
 
+  const { key, ...rest } = { ...props, key: props?.key || keys.getKey() };
+
   if (children.length === 0) {
     return {
       type,
-      props,
-      key: props?.key || getKey(), // 내부적으로 사용할 key
+      props: rest,
+      key, // 내부적으로 사용할 key
+      isDirty: false, // diffing을 위한 flag
     };
   }
 
   return {
     type,
-    props,
-    key: props?.key || getKey(),
+    props: rest,
+    key,
+    isDirty: false,
     children: createChildrenElement(children.flat()),
   };
 };

@@ -18,7 +18,7 @@ export default (function () {
       forceUpdate();
     };
 
-    if (!!state[_index]) {
+    if (state[_index] !== undefined) {
       return [state[_index], setState];
     }
 
