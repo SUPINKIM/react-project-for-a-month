@@ -152,7 +152,7 @@ const compareNode = (prevDom, currentDom) => {
 
   /** 문제1 이벤트 핸들러를 재등록해주지 않으면
    * 내부 상태가 바뀌어도 맨 처음 함수가 호출될 때의 값으로 캡쳐되어(클로저)
-   * 이 부분을 어떻게 해결하면 좋을지 고민  */
+   * 이 부분을 어떻게 해결하면 좋을지 고민이 필요함  */
   if (Object.keys(currentDom.props).some((key) => key.startsWith('on'))) {
     currentDom.isDirty = true;
   }
