@@ -59,11 +59,7 @@ export const createElement = (type, props, children) => {
    * 함수형 컴포넌트(Component)로 인식하고 처리
    */
   if (isComponent(type)) {
-    return {
-      type: 'Component',
-      props,
-      children: type(props),
-    };
+    return type({ ...props, children });
   }
 
   if (children.length === 0) {
@@ -76,25 +72,6 @@ export const createElement = (type, props, children) => {
   return {
     type,
     props,
-    children: createChildrenElement(children),
+    children: createChildrenElement(children.flat()),
   };
 };
-
-// console.log(
-//   `출력 결과 1: `,
-//   JSON.stringify(
-//     createElement('div', { className: 'container' }, 'Hello, World!'),
-//   ),
-// );
-
-// console.log(
-//   `\n 출력 결과 2: `,
-//   JSON.stringify(
-//     createElement(
-//       'div',
-//       { className: 'container' },
-//       'Hello, World!',
-//       createElement('span', { className: 'child', id: '12' }, 'Welcome, 2025'),
-//     ),
-//   ),
-// );

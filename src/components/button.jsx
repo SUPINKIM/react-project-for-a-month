@@ -1,16 +1,11 @@
-// DEMO
-export const Button = () => {
-  const handleClick = () => {
-    alert('Hello world');
-  };
+const Button = ({ name, onClick, type = 'button' }) => {
   return (
-    <button onClick={handleClick}>
+    <button onClick={onClick} type={type}>
       <span id="button-name" className="placeholder">
-        this is button!
+        {name}
       </span>
-      <div id="children-container">
-        <span>this is children~</span>
-      </div>
     </button>
   );
 };
+
+export default Button;
