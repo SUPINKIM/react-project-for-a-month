@@ -60,10 +60,6 @@ export default (function () {
    * @param fn: callback function
    */
   const addEventHandler = (targetKey, name, fn, capture = false) => {
-    // 정확히 어떤 element에서 이벤트가 발생했는지 알아야 한다.
-    // Q. eventTarget은 Element인데 어떻게 이걸 키로 사용할 수 있을까?
-    // 가상 돔과 실제 돔을 매핑하는 방법은 무엇일까?
-
     const targetEventMap = !eventElements.has(targetKey)
       ? new Map()
       : eventElements.get(targetKey);
