@@ -1,4 +1,4 @@
-export const diffing = () => {
+export default (function () {
   let prevVDOM;
 
   const setVDOM = (vDom) => {
@@ -11,4 +11,4 @@ export const diffing = () => {
     setVDOM,
     getVDOM,
   };
-};
+})();

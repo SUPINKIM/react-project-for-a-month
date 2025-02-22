@@ -3,7 +3,7 @@ const keys = (key = 0) => {
     clearKey: () => {
       key = 0;
     },
-    getKey: () => key++,
+    getKey: () => `inner_key_${key++}`,
   };
 };
 
