@@ -4,10 +4,10 @@
  *
  */
 
-import Diff from '@/utils/diff';
+import VDomStore from '@/utils/store';
 import Event from '@/utils/event';
 
-const { setVDOM, getVDOM } = Diff;
+const { setVDom, getVDom } = VDomStore;
 
 const { addEventHandler } = Event;
 
@@ -194,8 +194,8 @@ const compareNode = (prevDom, currentDom) => {
  * @param target: HTMLElement
  */
 export const render = (component, target) => {
-  const prevComponent = getVDOM();
-  setVDOM(component);
+  const prevComponent = getVDom();
+  setVDom(component);
 
   compareNode(prevComponent, component);
 

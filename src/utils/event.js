@@ -25,8 +25,6 @@
  * 
  */
 
-import { createRoot } from './commit';
-
 export default (function () {
   const queue = new Map();
 
