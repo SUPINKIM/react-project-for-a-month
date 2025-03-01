@@ -16,7 +16,6 @@ const TodoList = () => {
   const isEmpty = todos.length === 0;
 
   const validateValue = () => {
-    console.log(todoInputValue);
     if (!todoInputValue.trim().length) {
       alert('할 일을 입력해주세요.');
       return false;
@@ -44,6 +43,7 @@ const TodoList = () => {
 
   const resetTodo = () => {
     setTodos([]);
+    setTodoInputValue('');
   };
 
   const toggleCheck = (id) => {
@@ -65,7 +65,7 @@ const TodoList = () => {
   };
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    //console.log(e);
     createTodo();
   };
 
@@ -80,16 +80,16 @@ const TodoList = () => {
         그래서 onChange 이벤트만 동작하고 onSubmit 이벤트가 동작하지 않는 문제가 발생
       */}
 
-      <form onSubmit={handleSubmit}>
-        <input
-          id="todo-input"
-          type="text"
-          value={todoInputValue}
-          onChange={handleChange}
-          autoComplete="off"
-        />
-        <Button name="할 일 추가" type="submit" />
-      </form>
+      {/* <form onSubmit={handleSubmit}></form> */}
+
+      <input
+        id="todo-input"
+        type="text"
+        value={todoInputValue}
+        onChange={handleChange}
+        autoComplete="off"
+      />
+      <Button name="할 일 추가" onClick={handleSubmit} />
 
       <br />
       <Button name="초기화" onClick={resetTodo} />

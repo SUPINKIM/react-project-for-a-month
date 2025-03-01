@@ -4,9 +4,16 @@
  *
  */
 
-/** 이벤트 핸들러는 `on${eventName}`으로 이루어짐 */
+import VDomStore from '@/utils/store';
+import Event from '@/utils/event';
+
+const { setVDom, getVDom } = VDomStore;
+
+const { addEventHandler } = Event;
+
+/** 이벤트 핸들러는 `on${eventName}?Capture`으로 이루어짐 */
 export const getEventName = (eventName) =>
-  eventName.split('on').pop().toLowerCase();
+  eventName.split('on').pop().split('Capture')[0].toLowerCase();
 
 export const handleAttribute = (key) => {
   switch (key) {
@@ -17,12 +24,22 @@ export const handleAttribute = (key) => {
   }
 };
 
+export const handleEventListeners = (target, key, fn) => {
+  const eventName = getEventName(key);
+
+  const isCapture = key.endsWith('Capture');
+
+  addEventHandler(target.__innerKey, eventName, fn, isCapture);
+};
+
 export const handleProps = (target, props) => {
   Object.entries(props).forEach(([key, value]) => {
     try {
       switch (typeof value) {
         case 'function':
-          target.addEventListener(getEventName(key), value);
+          handleEventListeners(target, key, value);
+          break;
+        case 'undefined':
           break;
         default:
           if (typeof value === 'boolean' && !value) break;
@@ -74,17 +91,22 @@ export const isPrimitiveType = (value) => {
   return typeof value !== 'object';
 };
 
+export const injectInnerKey = (target, innerKey) => {
+  target.__innerKey = innerKey;
+};
+
 /**
  *
  * @param params: VDOM
  * @returns Node
  *
  */
-export const createDOM = ({ type, props, children }) => {
+export const createDOM = ({ type, props, __innerKey, children }) => {
   const container = getContainer(type);
 
   /** fragment 아닐 때만 props 속성 처리 */
   if (props && container.setAttribute) {
+    injectInnerKey(container, __innerKey);
     handleProps(container, props);
   }
 
@@ -104,13 +126,86 @@ export const createDOM = ({ type, props, children }) => {
   return container;
 };
 
+const findChildNode = (target, index = 0) => {
+  return target.childNodes[index];
+};
+
+export const updateDOM = (
+  { type, props, isDirty, isUpdateEvent, __innerKey, children },
+  target,
+) => {
+  if (isDirty) {
+    const newChildren = createDOM({ type, props, __innerKey, children });
+    target && target.replaceWith(newChildren);
+  } else {
+    if (isUpdateEvent) {
+      handleProps(target, props);
+    }
+
+    if (!children || (children.length === 1 && isPrimitiveType(children[0]))) {
+      return;
+    }
+
+    children?.forEach((child, idx) => {
+      updateDOM(child, findChildNode(target, idx));
+    });
+  }
+};
+
+const compareNode = (prevDom, currentDom) => {
+  if (prevDom === undefined || prevDom === null) {
+    currentDom.isDirty = true;
+    return;
+  }
+
+  if (!Array.isArray(currentDom) && typeof currentDom !== 'object') {
+    return { isDiff: JSON.stringify(prevDom) !== JSON.stringify(currentDom) };
+  }
+
+  // key / tag / props가 다르면
+  if (
+    prevDom.key !== currentDom.key ||
+    prevDom.type !== currentDom.type ||
+    JSON.stringify(prevDom.props) !== JSON.stringify(currentDom.props)
+  ) {
+    currentDom.isDirty = true;
+  }
+
+  if (Object.keys(currentDom.props).some((key) => key.startsWith('on'))) {
+    currentDom.isUpdateEvent = true;
+  }
+
+  if (currentDom?.children?.length !== prevDom?.children?.length) {
+    currentDom.isDirty = true;
+  }
+
+  currentDom?.children?.forEach((child, index) => {
+    const result = compareNode(prevDom?.children?.[index], child);
+
+    if (result?.isDiff) {
+      currentDom.isDirty = true;
+    }
+  });
+};
+
 /**
  *
  * @param component: VDOM
  * @param target: HTMLElement
  */
 export const render = (component, target) => {
-  const container = createFragment();
-  container.appendChild(createDOM(component));
-  target.appendChild(container);
+  const prevComponent = getVDom();
+  setVDom(component);
+
+  compareNode(prevComponent, component);
+
+  if (component?.isDirty) {
+    const container = createFragment();
+    container.appendChild(createDOM(component));
+
+    target.replaceChildren();
+    target.appendChild(container);
+  } else {
+    updateDOM(component, target);
+  }
 };

@@ -38,6 +38,8 @@
  *
  */
 
+import keys from '@/utils/keys';
+
 const isComponent = (type) => typeof type === 'function';
 
 const createChildrenElement = (children) =>
@@ -62,16 +64,26 @@ export const createElement = (type, props, children) => {
     return type({ ...props, children });
   }
 
+  const { key, ...rest } = { ...props, key: props?.key || null };
+
   if (children.length === 0) {
     return {
       type,
-      props,
+      props: rest,
+      key,
+      isUpdateEvent: false,
+      isDirty: false, // diffing을 위한 flag
+      __innerKey: keys.getKey(), // React Fiber 객체와 같이 내부적으로 실제 dom과 가상 dom을 매핑하기 위한 속성
     };
   }
 
   return {
     type,
-    props,
+    props: rest,
+    key,
+    isUpdateEvent: false,
+    isDirty: false,
+    __innerKey: keys.getKey(),
     children: createChildrenElement(children.flat()),
   };
 };
