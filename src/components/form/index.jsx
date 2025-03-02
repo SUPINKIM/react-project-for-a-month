@@ -3,11 +3,16 @@ import Input from './input/index';
 import Button from '../button';
 
 const Form = () => {
-  const { register, handleSubmit, getState, resetState } = useForm();
+  const { isSuccess, register, handleSubmit, getState, resetState } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
-    alert('폼이 제출되었습니다~');
+  const onSubmit = async (data) => {
+    const response = await fetch('/form', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    const result = await response.json();
+
+    alert(result.meta.resultMsg || '폼 제출 완료!');
   };
 
   return (
@@ -146,6 +151,24 @@ const Form = () => {
           />
         </div>
       </form>
+
+      {isSuccess && (
+        <div
+          style={{
+            'text-align': 'center',
+            'margin-top': '32px',
+            position: 'fixed',
+            top: '55%',
+            left: '50%',
+            background: '#ffffff',
+            width: '100%',
+            height: '100%',
+            transform: 'translate(-50%, -50%)',
+          }}
+        >
+          <p>응답이 성공적으로 기록되었습니다. 감사합니다! ❤️ 🙇‍♀️</p>
+        </div>
+      )}
     </div>
   );
 };
