@@ -39,6 +39,14 @@ export const handleProps = (target, props) => {
         case 'function':
           handleEventListeners(target, key, value);
           break;
+        case 'object':
+          target.setAttribute(
+            handleAttribute(key),
+            Object.entries(value).reduce(
+              (acc, [key, value]) => (acc += `${key}:${value};`),
+              '',
+            ),
+          );
         case 'undefined':
           break;
         default:
@@ -202,10 +210,13 @@ export const render = (component, target) => {
   if (component?.isDirty) {
     const container = createFragment();
     container.appendChild(createDOM(component));
-
     target.replaceChildren();
     target.appendChild(container);
-  } else {
-    updateDOM(component, target);
+    return;
   }
+
+  updateDOM(
+    component,
+    component.type !== 'Fragment' ? findChildNode(target) : target,
+  );
 };
