@@ -51,26 +51,22 @@ export const useForm = () => {
 
   const getState = (key) => state[key]?.value;
 
-  const validateByPattern = (target, regexp, message, name) => {
-    console.log(
-      target,
-      regexp,
-      message,
-      name,
-      target.length > 0,
-      !regexp.test(target),
-      `${target.length > 0 && !regexp.test(target)}`,
-    );
+  const validateByPattern = (target, pattern) => {
+    if (!pattern) return '';
+
+    const { regexp, message } = pattern;
+
     if (target.length > 0 && !regexp.test(target)) {
-      setError((prev) => ({
-        ...prev,
-        [name]: message || '패턴이 일치하지 않습니다.',
-      }));
-      return;
+      return message || '패턴이 일치하지 않습니다.';
     }
+
+    return '';
+  };
+
+  const setErrorAs = (name, errorMessage) => {
     setError((prev) => ({
       ...prev,
-      [name]: '',
+      [name]: errorMessage,
     }));
   };
 
@@ -87,18 +83,16 @@ export const useForm = () => {
       ...options,
       onChange: (e) => {
         try {
-          if (options?.pattern) {
-            const { regexp, message } = options.pattern;
-            validateByPattern(e.target.value, regexp, message, name);
-          } else if (options?.validate) {
-            setError((prev) => ({
-              ...prev,
-              [name]: options.validate(e.target.value),
-            }));
-          }
+          setError((prev) => ({
+            ...prev,
+            [name]:
+              validateByPattern(e.target.value, options.pattern) ||
+              (options.validate && options.validate(e.target.value)),
+          }));
+
           options?.onChange ? options.onChange(e, name) : onChange(e, name);
         } catch (error) {
-          console.error(error, '옵션이 정확한지 확인해주세요.');
+          console.error(error, 'register 옵션이 정확한지 확인해주세요.');
         }
       },
       value: state[name]?.value,
@@ -109,11 +103,12 @@ export const useForm = () => {
 
   return {
     register,
+    isLoading,
+    isSuccess,
+    setErrorAs,
     handleSubmit,
     onChange,
     getState,
     resetState,
-    isLoading,
-    isSuccess,
   };
 };

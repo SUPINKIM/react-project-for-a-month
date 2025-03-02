@@ -1,9 +1,18 @@
 import { useForm } from '@/utils/form';
 import Input from './input/index';
 import Button from '../button';
+import Loading from '../loading';
 
 const Form = () => {
-  const { isSuccess, register, handleSubmit, getState, resetState } = useForm();
+  const {
+    isLoading,
+    isSuccess,
+    setErrorAs,
+    register,
+    handleSubmit,
+    getState,
+    resetState,
+  } = useForm();
 
   const onSubmit = async (data) => {
     const response = await fetch('/form', {
@@ -17,6 +26,7 @@ const Form = () => {
 
   return (
     <div>
+      {isLoading && <Loading />}
       <h1 style={{ 'text-align': 'center', 'margin-bottom': '32px' }}>
         회원가입
       </h1>
@@ -40,8 +50,8 @@ const Form = () => {
           label="아이디"
           {...register('id', {
             required: true,
-            validate: (state) => {
-              if (state.length > 0 && state.length < 5) {
+            validate: (value) => {
+              if (value.length > 0 && value.length < 5) {
                 return '아이디는 5글자 이상이어야 합니다.';
               }
             },
@@ -55,9 +65,18 @@ const Form = () => {
           {...register('password', {
             required: true,
             pattern: {
-              regexp: /[a-zA-Z\d(*!#$%^&)+]{8,20}/gm,
+              regexp: /[a-zA-Z\d]{7,}[*!#$%^&]+/g,
               message:
-                '비밀번호는 8글자 이상, 20자 이하이며 영문, 숫자 및 *,!,#,$,%,^,& 특수 문자가 하나 이상 포함되어야 합니다.',
+                '비밀번호는 8글자 이상 영문, 숫자 조합 및 *,!,#,$,%,^,& 특수 문자 중 하나 이상 포함되어야 합니다.',
+            },
+            validate: (value) => {
+              const checkedPassword = getState('check-password');
+              if (checkedPassword?.length > 0 && value !== checkedPassword) {
+                setErrorAs('check-password', '비밀번호가 일치하지 않습니다.');
+              } else if (value === checkedPassword) {
+                setErrorAs('check-password', '');
+              }
+              return '';
             },
           })}
         />
