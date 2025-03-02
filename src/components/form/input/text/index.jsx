@@ -1,11 +1,22 @@
-const Text = ({ id, label, errorMessage, required = false, error = false }) => {
+const Text = ({
+  id,
+  value,
+  label,
+  type = 'text',
+  errorMessage,
+  required = false,
+  error = false,
+  onChange,
+}) => {
   return (
     <div>
       {required && <span style={{ color: '#d0312d' }}>*</span>}
       <label for={id}>{`${label} `}</label>
       <input
         id={id}
-        type="text"
+        type={type}
+        value={value}
+        onChange={onChange}
         autoComplete="off"
         style={{
           height: '20px',

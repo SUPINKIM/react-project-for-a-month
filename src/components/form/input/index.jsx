@@ -1,6 +1,6 @@
 import RadioButton from './radio/button';
 import RadioGroup from './radio/group';
-import Text from './text';
+import Text from './text/index';
 
 const Input = ({ children }) => children;
 
