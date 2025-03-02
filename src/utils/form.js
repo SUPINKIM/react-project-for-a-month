@@ -26,8 +26,10 @@ export const useForm = () => {
       return;
     }
 
+    setIsLoading(true);
     await callback(state);
     setIsSuccess(true);
+    setIsLoading(false);
     resetState();
   };
 
@@ -50,7 +52,16 @@ export const useForm = () => {
   const getState = (key) => state[key]?.value;
 
   const validateByPattern = (target, regexp, message, name) => {
-    if (!regexp.test(target)) {
+    console.log(
+      target,
+      regexp,
+      message,
+      name,
+      target.length > 0,
+      !regexp.test(target),
+      `${target.length > 0 && !regexp.test(target)}`,
+    );
+    if (target.length > 0 && !regexp.test(target)) {
       setError((prev) => ({
         ...prev,
         [name]: message || '패턴이 일치하지 않습니다.',
