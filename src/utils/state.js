@@ -18,8 +18,17 @@ export default (function () {
     index++;
 
     const setState = (newState) => {
-      state[_index] = newState;
-      forceUpdate();
+      let prev = state[_index];
+
+      if (typeof newState === 'function') {
+        state[_index] = newState(state[_index]);
+      } else {
+        state[_index] = newState;
+      }
+
+      if (JSON.stringify(prev) !== JSON.stringify(state[_index])) {
+        forceUpdate();
+      }
     };
 
     if (state[_index] !== undefined) {

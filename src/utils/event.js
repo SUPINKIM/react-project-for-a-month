@@ -42,10 +42,9 @@ export default (function () {
 
         if (!targetEventMap) return;
 
-        const fn = targetEventMap.get(name);
+        name === 'submit' && e.preventDefault();
 
-        // submit event는 div 엘리먼트에 이벤트 리스너를 달 수 없어서 다른 방법으로 우회해야 함(native event)
-        fn && pushEvent(target, () => fn(e));
+        pushEvent(target, name, e);
       },
       capture,
     );
@@ -69,14 +68,15 @@ export default (function () {
     addEventListenerOnRoot(name, capture);
   };
 
-  const pushEvent = (target, fn) => {
-    queue.set(target, fn);
+  const pushEvent = (target, name, e) => {
+    queue.set(target, { event: e, name });
   };
 
   // Q. 어느 시점에 dispatchEvent를 호출해야 할까?
   const dispatchEvent = () => {
-    for (const [_, fn] of queue) {
-      fn();
+    for (const [target, { event, name }] of queue) {
+      const fn = eventElements.get(target).get(name);
+      fn && fn(event);
     }
 
     queue.clear();
